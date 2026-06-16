@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Student Management System</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #22263a;
+    --accent: #6c63ff;
+    --accent2: #a78bfa;
+    --green: #22c55e;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --blue: #3b82f6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --border: #2d3148;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #1a1d27 0%, #16192a 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(12px);
+  }
+
+  .logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    background: linear-gradient(90deg, #6c63ff, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.5px;
+  }
+
+  .logo span { font-weight: 300; }
+
+  .header-badge {
+    background: rgba(108,99,255,0.15);
+    border: 1px solid rgba(108,99,255,0.3);
+    color: var(--accent2);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 20px;
+  }
+
+  /* STATS */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 24px 32px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .stat-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: border-color 0.2s;
+  }
+
+  .stat-card:hover { border-color: var(--accent); }
+
+  .stat-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .stat-label { font-size: 12px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .stat-value { font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 700; line-height: 1.1; }
+
+  /* MAIN LAYOUT */
+  .main { display: grid; grid-template-columns: 380px 1fr; gap: 0; height: calc(100vh - 145px); }
+
+  /* FORM PANEL */
+  .form-panel {
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 28px;
+    overflow-y: auto;
+  }
+
+  .panel-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text);
+  }
+
+  .panel-title::before {
+    content: '';
+    width: 3px; height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+    display: block;
+  }
+
+  .form-group { margin-bottom: 16px; }
+
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  input, select {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  input:focus, select:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(108,99,255,0.15);
+  }
+
+  select option { background: var(--surface2); }
+
+  .btn {
+    width: 100%;
+    padding: 11px 16px;
+    border-radius: 8px;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #6c63ff, #8b85ff);
+    color: white;
+    margin-bottom: 10px;
+  }
+
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(108,99,255,0.4); }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 24px 0;
+  }
+
+  /* SEARCH */
+  .search-wrap { position: relative; margin-bottom: 20px; }
+  .search-wrap input { padding-left: 36px; }
+  .search-icon {
+    position: absolute;
+    left: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* TABLE PANEL */
+  .table-panel {
+    background: var(--bg);
+    overflow-y: auto;
+    padding: 28px;
+  }
+
+  .table-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .filter-tabs {
+    display: flex;
+    gap: 8px;
+  }
+
+  .tab {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    transition: all 0.2s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .tab.active, .tab:hover {
+    background: rgba(108,99,255,0.15);
+    border-color: var(--accent);
+    color: var(--accent2);
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(45,49,72,0.5);
+    transition: background 0.15s;
+  }
+
+  tbody tr:hover { background: rgba(108,99,255,0.04); }
+
+  tbody td {
+    padding: 14px 16px;
+    vertical-align: middle;
+  }
+
+  .student-name {
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .grade-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  .action-btns { display: flex; gap: 8px; }
+
+  .icon-btn {
+    width: 30px; height: 30px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    transition: all 0.2s;
+    color: var(--muted);
+  }
+
+  .icon-btn:hover.edit { border-color: var(--blue); color: var(--blue); background: rgba(59,130,246,0.1); }
+  .icon-btn:hover.delete { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.1); }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state .emoji { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 15px; }
+  .empty-state small { font-size: 13px; opacity: 0.6; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    transform: translateX(120%);
+    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    z-index: 999;
+    max-width: 280px;
+  }
+
+  .toast.show { transform: translateX(0); }
+  .toast.error { border-left-color: var(--red); }
+
+  .marks-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+
+  .marks-num { font-size: 13px; font-weight: 600; min-width: 30px; text-align: right; }
+
+  @media (max-width: 900px) {
+    .main { grid-template-columns: 1fr; height: auto; }
+    .stats-bar { grid-template-columns: repeat(2, 1fr); }
+    .form-panel { border-right: none; border-bottom: 1px solid var(--border); }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Student<span>MS</span></div>
+  <div class="header-badge">✦ Built by Anjuma Thakur</div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(108,99,255,0.15)">🎓</div>
+    <div>
+      <div class="stat-label">Total Students</div>
+      <div class="stat-value" id="statTotal">0</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(34,197,94,0.15)">📈</div>
+    <div>
+      <div class="stat-label">Class Average</div>
+      <div class="stat-value" id="statAvg">—</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(245,158,11,0.15)">🏆</div>
+    <div>
+      <div class="stat-label">Top Score</div>
+      <div class="stat-value" id="statTop">—</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:rgba(239,68,68,0.15)">⚠️</div>
+    <div>
+      <div class="stat-label">Need Attention</div>
+      <div class="stat-value" id="statFail">0</div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <!-- FORM -->
+  <div class="form-panel">
+    <div class="panel-title">Add Student</div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="inp-name" placeholder="e.g. Anjuma Thakur"/>
+    </div>
+    <div class="form-group">
+      <label>Roll Number</label>
+      <input type="number" id="inp-roll" placeholder="e.g. 101"/>
+    </div>
+    <div class="form-group">
+      <label>Branch</label>
+      <select id="inp-branch">
+        <option value="">Select branch</option>
+        <option>CSE</option>
+        <option>IT</option>
+        <option>ECE</option>
+        <option>ME</option>
+        <option>Civil</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Marks (out of 100)</label>
+      <input type="number" id="inp-marks" placeholder="e.g. 85" min="0" max="100"/>
+    </div>
+    <div class="form-group">
+      <label>Year</label>
+      <select id="inp-year">
+        <option value="">Select year</option>
+        <option>1st Year</option>
+        <option>2nd Year</option>
+        <option>3rd Year</option>
+        <option>4th Year</option>
+      </select>
+    </div>
+
+    <button class="btn btn-primary" onclick="addStudent()">➕ Add Student</button>
+    <button class="btn btn-secondary" onclick="clearForm()">✕ Clear Form</button>
+
+    <hr class="divider"/>
+
+    <div class="panel-title">Filter Students</div>
+    <div class="form-group">
+      <label>By Branch</label>
+      <select id="filter-branch" onchange="renderTable()">
+        <option value="">All Branches</option>
+        <option>CSE</option><option>IT</option><option>ECE</option><option>ME</option><option>Civil</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>By Year</label>
+      <select id="filter-year" onchange="renderTable()">
+        <option value="">All Years</option>
+        <option>1st Year</option><option>2nd Year</option><option>3rd Year</option><option>4th Year</option>
+      </select>
+    </div>
+    <button class="btn btn-secondary" onclick="resetFilters()">↺ Reset Filters</button>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-panel">
+    <div class="table-header">
+      <div class="panel-title" style="margin-bottom:0">All Students</div>
+      <div class="filter-tabs">
+        <button class="tab active" onclick="setTab(this,'all')">All</button>
+        <button class="tab" onclick="setTab(this,'pass')">Passing</button>
+        <button class="tab" onclick="setTab(this,'fail')">Needs Help</button>
+      </div>
+    </div>
+
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="search-inp" placeholder="Search by name or roll number..." oninput="renderTable()"/>
+    </div>
+
+    <div id="table-container"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let students = [
+  { id: 1, name: "Rahul Sharma", roll: 101, branch: "CSE", marks: 88, year: "3rd Year" },
+  { id: 2, name: "Priya Singh", roll: 102, branch: "IT", marks: 74, year: "3rd Year" },
+  { id: 3, name: "Amit Kumar", roll: 103, branch: "CSE", marks: 45, year: "2nd Year" },
+  { id: 4, name: "Sneha Patel", roll: 104, branch: "ECE", marks: 93, year: "4th Year" },
+  { id: 5, name: "Rohan Gupta", roll: 105, branch: "ME", marks: 61, year: "1st Year" },
+];
+
+let nextId = 6;
+let currentTab = 'all';
+const avatarColors = ['#6c63ff','#22c55e','#3b82f6','#f59e0b','#ec4899','#14b8a6'];
+
+function getGrade(m) {
+  if (m >= 90) return { g: 'A+', color: '#22c55e', bg: 'rgba(34,197,94,0.12)' };
+  if (m >= 75) return { g: 'A',  color: '#3b82f6', bg: 'rgba(59,130,246,0.12)' };
+  if (m >= 60) return { g: 'B',  color: '#a78bfa', bg: 'rgba(167,139,250,0.12)' };
+  if (m >= 50) return { g: 'C',  color: '#f59e0b', bg: 'rgba(245,158,11,0.12)' };
+  return                  { g: 'F',  color: '#ef4444', bg: 'rgba(239,68,68,0.12)' };
+}
+
+function getBarColor(m) {
+  if (m >= 75) return '#22c55e';
+  if (m >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function getInitials(name) {
+  return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+}
+
+function addStudent() {
+  const name   = document.getElementById('inp-name').value.trim();
+  const roll   = parseInt(document.getElementById('inp-roll').value);
+  const branch = document.getElementById('inp-branch').value;
+  const marks  = parseInt(document.getElementById('inp-marks').value);
+  const year   = document.getElementById('inp-year').value;
+
+  if (!name || !roll || !branch || isNaN(marks) || !year) {
+    showToast('⚠️ Please fill in all fields!', true); return;
+  }
+  if (marks < 0 || marks > 100) {
+    showToast('⚠️ Marks must be between 0 and 100', true); return;
+  }
+  if (students.find(s => s.roll === roll)) {
+    showToast('⚠️ Roll number already exists!', true); return;
+  }
+
+  students.push({ id: nextId++, name, roll, branch, marks, year });
+  clearForm();
+  renderTable();
+  updateStats();
+  showToast('✅ Student added successfully!');
+}
+
+function deleteStudent(id) {
+  students = students.filter(s => s.id !== id);
+  renderTable();
+  updateStats();
+  showToast('🗑️ Student removed.');
+}
+
+function clearForm() {
+  ['inp-name','inp-roll','inp-branch','inp-marks','inp-year'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = el.tagName === 'SELECT' ? '' : '';
+  });
+}
+
+function resetFilters() {
+  document.getElementById('filter-branch').value = '';
+  document.getElementById('filter-year').value = '';
+  document.getElementById('search-inp').value = '';
+  renderTable();
+}
+
+function setTab(el, tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentTab = tab;
+  renderTable();
+}
+
+function renderTable() {
+  const search  = document.getElementById('search-inp').value.toLowerCase();
+  const branch  = document.getElementById('filter-branch').value;
+  const year    = document.getElementById('filter-year').value;
+
+  let filtered = students.filter(s => {
+    const matchSearch = s.name.toLowerCase().includes(search) || String(s.roll).includes(search);
+    const matchBranch = !branch || s.branch === branch;
+    const matchYear   = !year   || s.year === year;
+    const matchTab    = currentTab === 'all' || (currentTab === 'pass' ? s.marks >= 50 : s.marks < 50);
+    return matchSearch && matchBranch && matchYear && matchTab;
+  });
+
+  const container = document.getElementById('table-container');
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="emoji">🎓</div>
+        <p>No students found</p>
+        <small>Try adjusting your search or filters</small>
+      </div>`;
+    return;
+  }
+
+  const rows = filtered.map((s, i) => {
+    const { g, color, bg } = getGrade(s.marks);
+    const av = getInitials(s.name);
+    const ac = avatarColors[i % avatarColors.length];
+    return `
+      <tr>
+        <td>
+          <div class="student-name">
+            <div class="avatar" style="background:${ac}22;color:${ac}">${av}</div>
+            ${s.name}
+          </div>
+        </td>
+        <td style="color:var(--muted);font-family:'Space Grotesk',sans-serif">#${s.roll}</td>
+        <td style="color:var(--muted)">${s.branch}</td>
+        <td style="color:var(--muted)">${s.year}</td>
+        <td>
+          <div class="marks-bar">
+            <div class="bar-track"><div class="bar-fill" style="width:${s.marks}%;background:${getBarColor(s.marks)}"></div></div>
+            <span class="marks-num" style="color:${getBarColor(s.marks)}">${s.marks}</span>
+          </div>
+        </td>
+        <td><span class="grade-badge" style="color:${color};background:${bg}">${g}</span></td>
+        <td>
+          <div class="action-btns">
+            <button class="icon-btn delete" onclick="deleteStudent(${s.id})" title="Remove">🗑</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+
+  container.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Student</th>
+          <th>Roll No</th>
+          <th>Branch</th>
+          <th>Year</th>
+          <th>Marks</th>
+          <th>Grade</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function updateStats() {
+  const total = students.length;
+  const avg   = total ? (students.reduce((a,s)=>a+s.marks,0)/total).toFixed(1) : null;
+  const top   = total ? Math.max(...students.map(s=>s.marks)) : null;
+  const fail  = students.filter(s=>s.marks<50).length;
+
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statAvg').textContent   = avg ?? '—';
+  document.getElementById('statTop').textContent   = top ?? '—';
+  document.getElementById('statFail').textContent  = fail;
+}
+
+let toastTimer;
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isError ? ' error' : '') + ' show';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+renderTable();
+updateStats();
+</script>
+</body>
+</html>
